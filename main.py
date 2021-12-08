@@ -1,14 +1,16 @@
-
 from client import Client
 
 if __name__ == '__main__':
 
-    ip = 'http://45.143.139.222'
+    client = Client()
 
-    client = Client(ip)
-
-    client.setToken("semen", "mypassowrd")
-    print(client.addTodo("new todo for semen"))
+    print(client.register("myuser", "mypassword"))
+    print(client.setToken("myuser", "mypassword"))
+    print(client.addTodo("first user todo"))
+    print(client.addTodo("second user todo"))
+    print(client.getTodos())
+    print(client.getTodo(1))
+    print(client.deleteTodo(2))
+    print(client.updateTodo(1,"updated todo"))
     print(client.getTodos())
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/

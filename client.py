@@ -1,11 +1,10 @@
 import requests
 import json
 
-
 class Client:
 
-    def __init__(self, url):
-        self.url = url
+    def __init__(self):
+        self.url = 'http://45.143.139.222'
         self.token = "none"
 
     def register(self, username, password):
@@ -31,19 +30,17 @@ class Client:
         if self.token == "none":
             return {'Error': 'You need to set token first'}
         r = requests.get(f'{self.url}/api/todo', headers={'Authorization': f'Bearer {self.token}'})
-        if r.status_code == 401:
-            return {'Error': 'Invalid JWT token'}
         jsonData = json.loads(r.text)
+        if r.status_code != 200:
+            return {'Error': jsonData['errors']}
         return jsonData
 
     def getTodo(self, id):
         if self.token == "none":
             return {'Error': 'You need to set token first'}
         r = requests.get(f'{self.url}/api/todo/{id}', headers={'Authorization': f'Bearer {self.token}'})
-        if r.status_code == 401:
-            return {'Error': 'Invalid JWT token'}
         jsonData = json.loads(r.text)
-        if r.status_code == 404:
+        if r.status_code != 200:
             return {'Error': jsonData['errors']}
         return jsonData
 
@@ -52,10 +49,29 @@ class Client:
             return {'Error': 'You need to set token first'}
         r = requests.post(f'{self.url}/api/todo', headers={'Authorization': f'Bearer {self.token}'},
                           json={'name': name})
-        if r.status_code == 401:
-            return {'Error': 'Invalid JWT token'}
+        jsonData = json.loads(r.text)
+        if r.status_code != 200:
+            return {'Error': jsonData['errors']}
         else:
             return {'Success':'Post added successfully'}
 
+    def deleteTodo(self, id):
+        if self.token == "none":
+            return {'Error': 'You need to set token first'}
+        r = requests.delete(f'{self.url}/api/todo/{id}', headers={'Authorization': f'Bearer {self.token}'})
+        jsonData = json.loads(r.text)
+        if r.status_code != 200:
+            return {'Error': jsonData['errors']}
+        else:
+            return {'Success': 'Post deleted successfully'}
 
-
+    def updateTodo(self,id,name):
+        if self.token == "none":
+            return {'Error': 'You need to set token first'}
+        r = requests.put(f'{self.url}/api/todo/{id}', headers={'Authorization': f'Bearer {self.token}'},
+                         json={'name':name})
+        jsonData = json.loads(r.text)
+        if r.status_code != 200:
+            return {'Error': jsonData['errors']}
+        else:
+            return {'Success': 'Post updated successfully'}
